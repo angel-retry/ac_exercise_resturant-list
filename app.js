@@ -3,7 +3,7 @@ const {engine} = require('express-handlebars')
 const app = express()
 const port = 3000
 
-const restaurants = require('./public/jsons/restaurant.json')
+const restaurants = require('./public/jsons/restaurant.json').results
 
 //載入static files
 app.use(express.static('public'))
@@ -21,13 +21,14 @@ app.get('/', (req, res) => {
 
 //restaurants清單 route設定
 app.get('/restaurants', (req, res) => {
-  res.render('index')
+  res.render('index', {restaurants})
 })
 
 //restaurants清單detail route設定
 app.get('/restaurants/:id', (req, res) => {
   const id = req.params.id
-  res.send(`read list is ${id}`)
+  const restaurant = restaurants.find(restaurant => restaurant.id.toString() === id)
+  res.render('show', {restaurant})
 })
 
 app.listen(port, () => {
