@@ -31,6 +31,37 @@ app.get('/restaurants/:id', (req, res) => {
   res.render('show', {restaurant})
 })
 
+//搜尋結果 route設定
+app.get('/search', (req, res) => {
+  //使用query抓取keyword值
+  const keyword = req.query.keyword?.trim() //搜尋關鍵字左右兩側空白使用trim()省略
+  //matchedRestaurants的值接收搜尋結果
+  //使用?來判斷keyword有無值決定以下執行指令
+  //使用filter回傳查詢結果
+  const matchedRestaurants = keyword ? restaurants.filter( restaurant =>
+    //使用Object可抓取resturant Obj的屬性
+    //使用some設定條件判斷是否能通過，才可繼續下面指令
+    Object.values(restaurant).some( property => {
+      if(typeof property === 'string') {
+        //屬性為string，可繼續以下指令，並return以下結果
+        return property.toLowerCase().includes(keyword.toLowerCase())
+      }
+      return false
+    })
+  ) : restaurants
+  
+  //判斷matchedRestaurants有無值(是否有查詢結果)
+  if(matchedRestaurants.length) {
+    //有結果，顯示結果
+    res.render('index', {restaurants: matchedRestaurants, keyword})
+  } else {
+    //沒結果，顯示無此結果
+    res.render('notFound', {keyword})
+  }
+  
+
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
