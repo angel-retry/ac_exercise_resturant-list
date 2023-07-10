@@ -1,9 +1,16 @@
 const express = require('express')
+const {engine} = require('express-handlebars')
 const app = express()
 const port = 3000
 
 //載入static files
 app.use(express.static('public'))
+
+//載入hbs，view engine設定
+app.engine('.hbs', engine({extname: '.hbs'}));
+app.set('view engine', '.hbs');
+app.set('views', './views');
+
 
 //首頁route設定
 app.get('/', (req, res) => {
